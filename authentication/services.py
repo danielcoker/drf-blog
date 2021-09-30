@@ -3,6 +3,9 @@ from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 
 
 def login(email: str, password: str):
+    """
+    Authenticate a user.
+    """
     user = authenticate(username=email, password=password)
 
     if user is None:
