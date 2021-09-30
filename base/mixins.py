@@ -9,16 +9,17 @@ class SuccessMessageMixin:
     def get_renderer_context(self):
         context = super().get_renderer_context()
 
-        try:
-            self.resource_name = type(self.get_queryset()[0]).__name__ if hasattr(
-                self, 'get_queryset') else None
-        except IndexError as e:
-            # If the queryset returns an empty list,
-            # set `success_message` to 'No records found.'
-            self.success_message = 'No records found.'
-        except:
-            # If an error is raised, fail silently and move on.
-            pass
+        if not self.resource_name:
+            try:
+                self.resource_name = type(self.get_queryset()[0]).__name__ if hasattr(
+                    self, 'get_queryset') else None
+            except IndexError as e:
+                # If the queryset returns an empty list,
+                # set `success_message` to 'No records found.'
+                self.success_message = 'No records found.'
+            except:
+                # If an error is raised, fail silently and move on.
+                pass
 
         context['resource_name'] = self.resource_name
         context['success_message'] = self.success_message
