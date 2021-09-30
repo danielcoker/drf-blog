@@ -6,6 +6,7 @@ from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 
 from base.mixins import SuccessMessageMixin
 
+from .models import User
 from .serializers import LoginSerializer, RegistrationSerializer, UserSerializer
 
 
@@ -34,5 +35,13 @@ class UserRetrieveUpdateAPIView(SuccessMessageMixin, RetrieveUpdateAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
