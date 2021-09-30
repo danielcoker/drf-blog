@@ -140,6 +140,9 @@ AUTH_USER_MODEL = 'authentication.User'
 APPEND_SLASH = False
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'authentication.backends.JWTAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': (
         'base.renderers.CustomJSONRenderer',
         'rest_framework.renderers.JSONRenderer',
