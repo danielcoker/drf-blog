@@ -1,15 +1,10 @@
 from rest_framework import serializers
 
 from .models import User
+from .services import login
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    """
-    Serializes regitration requests and creates a new uesr.
-    """
-
-    # Ensure passwords are at least 8 characters long, no longer than 128
-    # characters, and cannot be read by the client.
     password = serializers.CharField(
         max_length=128, min_length=8, write_only=True)
 
@@ -25,3 +20,19 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.token = user.generate_jwt_token()
 
         return user
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255, required=True)
+    username = serializers.CharField(max_length=255, read_only=True)
+    password = serializers.CharField(
+        max_length=128, write_only=True, required=True)
+    token = serializers.CharField(max_length=255, read_only=True)
+
+    def validate(self, data):
+        authenticate_kwargs = {
+            'email': data['email'],
+            'password': data['password']
+        }
+
+        return login(**authenticate_kwargs)
