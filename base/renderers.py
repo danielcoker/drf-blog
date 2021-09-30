@@ -5,11 +5,6 @@ import inflection
 
 class CustomJSONRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        try:
-            detail_in_data = 'detail' in data
-        except Exception as e:
-            detail_in_data = False
-
         status = renderer_context.get('response').status_code
         success_message = renderer_context.get('success_message', None)
 
@@ -34,7 +29,7 @@ class CustomJSONRenderer(JSONRenderer):
             success_message = f'{resource_name} {action} successfully.'
 
         # If the status code is 404 and the resource name exist, add a descriptive 'not found' message.
-        if not detail_in_data and status == 404 and resource_name:
+        if status == 404 and resource_name:
             data['detail'] = f'{resource_name} does not exist.'
 
         # When the 'data' data type is a rest_framework.utils.serializer_helpers.ReturnList,
@@ -44,6 +39,11 @@ class CustomJSONRenderer(JSONRenderer):
             message = data.get('detail', success_message)
         except Exception as e:
             message = success_message
+
+        try:
+            detail_in_data = 'detail' in data
+        except Exception as e:
+            detail_in_data = False
 
         errors = None
 

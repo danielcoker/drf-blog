@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from base.mixins import SuccessMessageMixin
@@ -14,3 +14,9 @@ class PostListCreateAPIView(SuccessMessageMixin, ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class PostRetrieveUpdateDestroyAPIView(SuccessMessageMixin, RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.active()
+    permission_classes = (IsAuthenticatedOrReadOnly,)
