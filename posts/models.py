@@ -26,3 +26,11 @@ class Post(TimestampedModel):
 
     def __str__(self):
         return self.title
+
+
+class Comment(TimestampedModel):
+    body = models.TextField()
+    post = models.ForeignKey(
+        Post, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User, related_name='comments', on_delete=models.CASCADE)
