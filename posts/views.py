@@ -2,6 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from base.mixins import SuccessMessageMixin
+from posts.permissions import IsOwnerOrReadOnly
 
 from .models import Comment, Post
 from .serializers import PostSerializer, CommentSerializer
@@ -19,7 +20,7 @@ class PostListCreateAPIView(SuccessMessageMixin, ListCreateAPIView):
 class PostRetrieveUpdateDestroyAPIView(SuccessMessageMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.active()
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 
 class CommentListCreateAPIView(SuccessMessageMixin, ListCreateAPIView):
