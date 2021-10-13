@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 
 def test_create_post(client):
     user = f.UserFactory.create()
-    url = reverse('post_list_create')
+    url = reverse('posts-list')
     data = {'title': 'Post Name', 'body': 'Post body.'}
 
     client.login(user)
@@ -30,7 +30,7 @@ def test_list_posts(client):
     post2 = f.PostFactory.create(title='Post Test 2', body='Post body 2.')
     post1 = f.PostFactory.create(title='Post Test 1', body='Post body 1.')
 
-    url = reverse('post_list_create')
+    url = reverse('posts-list')
 
     response = client.get(url)
     response_data = json.loads(response.content)['data']
@@ -44,7 +44,7 @@ def test_list_posts(client):
 def test_get_post_detail(client):
     post = f.PostFactory.create()
 
-    url = reverse('post_retrieve_update_destroy', kwargs={'pk': post.id})
+    url = reverse('posts-detail', kwargs={'pk': post.id})
 
     response = client.get(url)
     response_data = json.loads(response.content)['data']
@@ -56,7 +56,7 @@ def test_get_post_detail(client):
 def test_get_post_details_with_non_existent_id(client):
     post = f.PostFactory.create()
 
-    url = reverse('post_retrieve_update_destroy',
+    url = reverse('posts-detail',
                   kwargs={'pk': randint(1000, 2000)})
 
     client.login(post.author)
@@ -69,7 +69,7 @@ def test_update_post(client):
     post = f.PostFactory.create()
     data = {'title': 'Update Post Title', 'body': 'Update post body.'}
 
-    url = reverse('post_retrieve_update_destroy', kwargs={'pk': post.id})
+    url = reverse('posts-detail', kwargs={'pk': post.id})
 
     client.login(post.author)
     response = client.put(url, data)
@@ -85,7 +85,7 @@ def test_update_post_with_non_existent_id(client):
     user = f.UserFactory.create()
     data = {'title': 'Update Post Title', 'body': 'Update post body.'}
 
-    url = reverse('post_retrieve_update_destroy',
+    url = reverse('posts-detail',
                   kwargs={'pk': randint(1000, 2000)})
 
     client.login(user)
@@ -99,7 +99,7 @@ def test_update_post_for_another_author(client):
     post = f.PostFactory.create()
     data = {'title': 'Update Post Title', 'body': 'Update post body.'}
 
-    url = reverse('post_retrieve_update_destroy', kwargs={'pk': post.id})
+    url = reverse('posts-detail', kwargs={'pk': post.id})
 
     client.login(user)
     response = client.put(url, data)
@@ -110,7 +110,7 @@ def test_update_post_for_another_author(client):
 def test_delete_post(client):
     post = f.PostFactory.create()
 
-    url = reverse('post_retrieve_update_destroy', kwargs={'pk': post.id})
+    url = reverse('posts-detail', kwargs={'pk': post.id})
 
     client.login(post.author)
     response = client.delete(url)
@@ -121,7 +121,7 @@ def test_delete_post(client):
 
 def test_delete_post_with_non_existent_id(client):
     user = f.UserFactory.create()
-    url = reverse('post_retrieve_update_destroy',
+    url = reverse('posts-detail',
                   kwargs={'pk': randint(1000, 2000)})
 
     client.login(user)
@@ -134,7 +134,7 @@ def test_delete_post_for_another_author(client):
     user = f.UserFactory.create()
     post = f.PostFactory.create()
 
-    url = reverse('post_retrieve_update_destroy', kwargs={'pk': post.id})
+    url = reverse('posts-detail', kwargs={'pk': post.id})
 
     client.login(user)
     response = client.delete(url)
@@ -150,7 +150,7 @@ def test_create_comment_for_post(client):
     post = f.PostFactory.create()
     data = {'body': 'Test comment for a post.'}
 
-    url = reverse('post_comment_create', kwargs={'post_id': post.id})
+    url = reverse('post-comments-list', kwargs={'post_id': post.id})
 
     client.login(user)
     response = client.post(url, data)
