@@ -13,7 +13,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password', 'token']
+        fields = ['id', 'email', 'username', 'password', 'token']
 
     def create(self, validate_data):
         user = User.objects.create_user(**validate_data)
@@ -23,6 +23,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     email = serializers.CharField(max_length=255, required=True)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(
