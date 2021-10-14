@@ -1,8 +1,6 @@
 import pytest
 from django.urls import reverse
 
-from .. import factories
-
 pytestmark = pytest.mark.django_db
 
 
@@ -17,7 +15,7 @@ def register_payload():
 
 @pytest.fixture
 def register_endpoint():
-    return reverse('authentication_register')
+    return reverse('auth-register')
 
 
 def test_respond_201_after_registration(client, register_endpoint, register_payload):
@@ -46,7 +44,7 @@ def test_user_login_with_correct_credentials(client, register_endpoint, register
         'password': register_payload['password']
     }
 
-    response = client.post(reverse('authentication_login'), login_payload)
+    response = client.post(reverse('auth-login'), login_payload)
     assert response.status_code == 200
 
 
@@ -61,7 +59,7 @@ def test_login_with_incorrect_credentials(client, register_endpoint, register_pa
         'password': 'valid_password',
     }
 
-    response = client.post(reverse('authentication_login'), login_payload)
+    response = client.post(reverse('auth-login'), login_payload)
     assert response.status_code == 403
 
     login_payload = {
@@ -69,5 +67,5 @@ def test_login_with_incorrect_credentials(client, register_endpoint, register_pa
         'password': 'invalid_password',
     }
 
-    response = client.post(reverse('authentication_login'), login_payload)
+    response = client.post(reverse('auth-login'), login_payload)
     assert response.status_code == 403
